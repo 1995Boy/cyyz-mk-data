@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.chuangyun.modules.sys.dao.SysUserRoleDao">
+
+    <select id="queryList"
+            resultType="com.chuangyun.modules.sys.entity.SysUserRoleEntity">
+        select * from s_user_role
+        <where>
+            <if test="userId != null">
+                user_id = #{userId}
+            </if>
+        </where>
+    </select>
+
+    <insert id="save">
+        insert into s_user_role
+        (
+        user_id,
+        role_id
+        )
+        values
+        <foreach collection="roleIdList" item="item" index="index"
+                 separator=",">
+            (
+            #{userId},
+            #{item}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="delete">
+		delete from s_user_role where user_id = #{value}
+	</delete>
+
+    <delete id="deleteBatchByRoleIds">
+        delete from s_user_role where role_id in
+        <foreach item="roleId" collection="array" open="(" separator="," close=")">
+            #{roleId}
+        </foreach>
+    </delete>
+
+    <select id="queryRoleIdList" resultType="long">
+		select role_id from
+		s_user_role where user_id = #{value}
+	</select>
+</mapper>

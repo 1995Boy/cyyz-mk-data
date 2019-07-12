@@ -1,0 +1,78 @@
+html,body{
+	font-size: 14px;
+	height: 100%;
+}
+#main{
+	height: 100%;
+}
+.eup{
+	width: 100%;
+	height: 100%;
+}
+.eupl,.eupr{
+	width: 49%;
+	height: 100%;
+	float: left;
+	border: 1px solid #545454;
+}
+.allecharts{
+	width: 100%;
+	height: calc(32% - 30px);
+}
+.allecharts div{
+	width: 33%;
+	height: 100%;
+	float: left;
+}
+.allecharts .marAuto{
+	float: none;
+	width: 66%;
+	margin: 0 auto;
+}
+.emapul li:nth-child(odd){
+	box-shadow: 0px 0 20px 0px #717070 inset;
+}
+.emapul li:nth-child(even){
+	box-shadow: 0px 0 20px 0px #354e96 inset;
+}
+#ehowd,#ehowe{
+	width: 50%;
+}
+
+.eupr{
+	float: right;
+}
+#emap{
+	width: 100%;
+	height: calc(60% - 30px);
+}
+#arranged{
+	width: 100%;
+	height: calc(36% - 30px);
+}
+.emapul{
+	margin-bottom: 0;
+	height: 40%;
+	background: rgba(38,66,96,0.2);
+}
+.emapul li{
+	list-style: none;
+	color: #FFFFFF;
+	overflow: hidden;
+}
+.ulspano,.ulspanp,.ulspanq{
+	display: block;
+	float: left;
+	width: 33%;
+	text-align: center;
+}
+#loadingbox {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+    z-index: 99999;
+}

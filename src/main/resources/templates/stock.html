@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>国家电网</title>
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/vue.min.js"></script>
+    <script src="./js/echarts.min.js"></script>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/stock.css">
+</head>
+
+<body>
+    <div id="app">
+        <div class="header">
+            <div class="headerLeft">
+                <div class="logo">
+                    <img src="./img/logo.png">
+                </div>
+                <div class="line"></div>
+                <div class="name">
+                    配网物资预测系统
+                </div>
+            </div>
+
+            <ul class="login">
+                <li>
+                    <a href="#">
+                        <img src="img/people.png">
+                        程栋
+                    </a>
+                </li>
+                <li class="loginOut" @click="loginOut">
+                    <a href="#">退出</a>
+                </li>
+            </ul>
+        </div>
+        <div id="tab">
+            <div class="nav">
+                <ul id="nav">
+                    <li><a href="login.html">首页</a></li>
+                    <li><a href="#">预报</a></li>
+                    <li><a href="material.html">物资预测</a></li>
+                    <li><a href="model.html">模型训练</a></li>
+                    <li class="active"><a href="stock.html">库存结构</a></li>
+                    <li><a href="demand.html">需求计划</a></li>
+                </ul>
+                <div class="top">
+                    ︿
+                </div>
+            </div>
+        </div>
+        <div>
+            <div id="content">
+                <div class="cont">
+                    <div class="choice">
+                        <select v-model="selectYear">
+                            <option v-for="item in year" :value="item">{{item}}年</option>
+                        </select>
+                        <select v-model="selectType">
+                            <option v-for="item in type" :value="item">{{item}}</option>
+                        </select>
+                    </div>
+                    <table cellpadding="10" cellspacing="0" class="tab">
+                        <tr>
+                            <th></th>
+                            <th v-for="item in 12">{{item}}月</th>
+                        </tr>
+                        <tr v-for="(item,index) in Data">
+                            <th>{{item.city}}</th>
+							
+							<td v-for="p in item.months">
+								{{p}}
+							</td>
+                        </tr>    
+                    </table>
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+    <script src="js/stock.js"></script>
+</body>
+
+</html>

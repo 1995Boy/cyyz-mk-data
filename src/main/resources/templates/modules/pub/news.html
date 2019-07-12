@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>参数管理</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="../../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../css/font-awesome.min.css">
+    <link rel="stylesheet" href="../../plugins/jqgrid/ui.jqgrid-bootstrap.css">
+    <link rel="stylesheet" href="../../plugins/ztree/css/metroStyle/metroStyle.css">
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../../plugins/simditor-master/styles/simditor.css" />
+    <script type="text/javascript" src="../../plugins/simditor-master/site/assets/scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="../../plugins/simditor-master/site/assets/scripts//module.js"></script>
+    <script type="text/javascript" src="../../plugins/simditor-master/site/assets/scripts//hotkeys.js"></script>
+    <script type="text/javascript" src="../../plugins/simditor-master/site/assets/scripts//uploader.js"></script>
+    <script type="text/javascript" src="../../plugins/simditor-master/site/assets/scripts//simditor.js"></script>
+    <script src="../../libs/jquery.min.js"></script>
+    <script src="../../plugins/layer/layer.js"></script>
+    <script src="../../libs/bootstrap.min.js"></script>
+    <script src="../../libs/vue.min.js"></script>
+    <script src="../../libs/validator.min.js"></script>
+    <script src="../../plugins/jqgrid/grid.locale-cn.js"></script>
+    <script src="../../plugins/jqgrid/jquery.jqGrid.min.js"></script>
+    <script src="../../plugins/ztree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <style>
+        .simditor{
+            width:1000px!important;
+        }
+    </style>
+</head>
+<body>
+ <div id="rrapp" v-cloak>
+    <div v-show="showList" class="changeColor">
+        <div class="grid-btn">
+                <span>类型</span>
+                <div class="btn-group">
+                    <select class="form-control">
+                        <option selected>新闻</option>
+                        <option>通知</option>
+                    </select>
+                </div>
+                <span>标题</span>
+                <input type="text" v-model="q.title" @keyup.enter="query" placeholder="标题">
+                <span>是否过期</span>
+                <div class="btn-group">
+                    <select class="form-control">
+                        <option selected>全部</option>
+                        <option>是</option>
+                        <option>否</option>
+                    </select>
+                </div>
+                <a class="btn btn-default" @click="query">查询</a>
+                <a v-if="hasPermission('sys:config:save')" class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+                <a v-if="hasPermission('sys:config:update')" class="btn btn-primary" @click="update"><i
+                        class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+                <a v-if="hasPermission('sys:config:delete')" class="btn btn-primary" @click="del"><i
+                        class="fa fa-trash-o"></i>&nbsp;删除</a>
+ 
+        </div>
+        <table id="jqGrid"></table> 
+        <!-- <table class="table table-bordered table-striped"  id="news">
+                 填入 
+            </table> -->
+
+         <div id="jqGridPager"></div> 
+    </div>
+
+    <div v-show="!showList" class="panel panel-default changeColorTwo">
+        <div class="panel-heading changeColorThree">{{title}}</div>
+        <form class="form-horizontal">
+            <div class="form-group">
+                <div class="col-sm-2 control-label">类型</div>
+                <div class="col-sm-10">
+                    <select class="form-control" v-model="news.newsType">
+                        <option value="新闻">新闻</option>
+                        <option value="通知">通知</option>
+                    </select>
+                    <!-- <input type="radio" name="new" v-model="news.newsType"/>新闻
+                    <input type="radio" name="new" v-model="news.newsType"/>通知 -->
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">标题</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="news.title" placeholder="标题"/>
+                </div>
+            </div>
+			<div class="form-group">
+				<div class="col-sm-2 control-label">发布日期</div>
+				<div class="col-sm-10">
+					<input type="date" class="form-control" v-model="news.newsBeginDate" placeholder="发布日期"/>
+				</div>
+			</div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">截止日期</div>
+                <div class="col-sm-10">
+                    <input type="date" class="form-control" v-model="news.newsEndDate" placeholder="截止日期"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">外部网页</div>
+                <div class="col-sm-10">
+                    <input type="radio" name="type" value="1" v-model="news.isReference"/>是
+                    <input type="radio" name="type" value="0" v-model="news.isReference"/>否
+                </div>
+            </div>
+            <!-- <div class="form-group">
+                    <div class="col-sm-2 control-label">文章内容</div>
+                        <textarea  type="text/plain"  v-model="news.context"> </textarea>
+                  
+            </div> -->
+            <div class="form-group">
+                    <div class="col-sm-2 control-label">文章内容</div>
+                    <div class="formControls col-xs-8 col-sm-9">
+                        <textarea id="editor" type="text/plain" name="context" style="width:100%;" v-model="news.context"> </textarea>
+                    </div>    
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label"></div>
+                <input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+                &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload(1)" value="返回"/>
+            </div>
+        </form>
+    </div> 
+</div>  
+<!-- 选择菜单 -->
+  <div id="deptLayer" style="display: none;padding:10px;">
+    <ul id="deptTree" class="ztree"></ul>
+</div>  
+
+<script src="../../js/modules/pub/news.js"></script>
+</body>
+</html>

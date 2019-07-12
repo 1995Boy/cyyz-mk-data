@@ -1,0 +1,78 @@
+.content{
+    width: 100%;
+    height:100%;
+}
+.content .left{
+    width: 59%;
+    height:100%;
+}
+.content .right{
+    width: 40%;
+    height:100%;
+}
+.content .right .news{
+    width: 100%;
+    height: 48%;
+    overflow: hidden;
+}
+.news h3{
+    border:1px solid #ccc;
+}
+/* 滚动条内容 */
+.new{
+    height: 100%;
+	width: 103.3%;
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+
+/* 公司简介 */
+.content .right .abstract{
+    width:100%;
+    height: 48%;
+    overflow: hidden; 
+    border:1px solid #ccc;  
+}
+.content .right h3{
+    margin:0px;
+    font-size: 14px;
+    padding:2%;
+    font-weight: 700; 
+    border-bottom:1px solid #ccc; 
+    color:#337AB7;
+}
+
+/* 滚动条 */
+#absBox{
+    height: 96%;
+    overflow: hidden;
+}
+/* 公司简介内容 */
+.content .right .abstract .con{
+    text-indent: 2em;
+    padding-top: 4px;
+    box-sizing: border-box;
+    height: 100%;
+	width: 103.3%;
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+
+.tab th,.tab td{
+    text-align: center;
+}
+.tab .daiban{
+    text-align: left;
+}
+.color{
+    color:#337AB7;
+}
+
+.tab button{
+    background-color: #009688 !important;
+    outline: none !important;
+    color:#fff;
+}
+.tab button i{
+    padding-right:3px;
+}

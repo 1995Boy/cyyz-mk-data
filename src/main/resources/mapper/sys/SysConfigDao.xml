@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chuangyun.modules.sys.dao.SysConfigDao">
+    <select id="queryObject"
+            resultType="com.chuangyun.modules.sys.entity.SysConfigEntity">
+		select sc.*,sd.name from s_config sc left join s_dept sd
+		 on sc.dept_id = sd.dept_id
+		 where sc.id = #{id}
+	</select>
+
+    <select id="queryList" parameterType="map"
+            resultType="com.chuangyun.modules.sys.entity.SysConfigEntity">
+        select sc.*,sd.name from s_config sc left join s_dept sd
+        on sc.dept_id = sd.dept_id
+        where status = 1
+        <if test="key != null and key.trim() != ''">
+            and sc.`key` like concat('%',#{key},'%')
+        </if>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="queryTotal" parameterType="map" resultType="int">
+        select count(*) from s_config where status = 1
+        <if test="key != null and key.trim() != ''">
+            and `key` like ('%' + #{key} + '%')
+        </if>
+    </select>
+
+    <insert id="save"
+            parameterType="com.chuangyun.modules.sys.entity.SysConfigEntity">
+		insert into s_config(`key`,dept_id, `value`, remark)
+		values(#{key},#{deptId},#{value},#{remark})
+	</insert>
+
+    <update id="update"
+            parameterType="com.chuangyun.modules.sys.entity.SysConfigEntity">
+		update s_config set `key` = #{key}, `value` = #{value},
+		dept_id = #{deptId},
+		remark = #{remark}
+		where id = #{id}
+	</update>
+
+    <!-- 根据key，更新value -->
+    <update id="updateValueByKey" parameterType="map">
+		update s_config
+		set `value` = #{value},dept_id = #{deptId} where `key` = #{key}
+	</update>
+
+    <!-- 根据key，查询value -->
+    <select id="queryByKey" parameterType="string"
+            resultType="com.chuangyun.modules.sys.entity.SysConfigEntity">
+		select * from s_config where `key` = #{key}
+	</select>
+
+    <delete id="deleteBatch" parameterType="int">
+        delete from s_config where id in
+        <foreach item="id" collection="array" open="(" separator=","
+                 close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--获取用户权限的数据权限-->
+    <select id="getValueByUserIdAndKey"
+            resultType="java.lang.String">
+		SELECT
+            value
+        FROM
+            s_config
+        WHERE
+            FIND_IN_SET(dept_id, GETPARLST(#{deptId}))
+                AND `key` = #{key}
+        ORDER BY dept_id DESC
+        LIMIT 0 , 1
+	</select>
+
+    <!--检查是否存在-->
+    <select id="checkExist"
+            resultType="java.lang.Integer">
+		select count(1) from s_config where `key` = #{key} and dept_id = #{deptId}
+	</select>
+</mapper>

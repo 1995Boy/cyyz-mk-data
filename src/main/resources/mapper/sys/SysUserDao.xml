@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.chuangyun.modules.sys.dao.SysUserDao">
+	<select id="queryObject"
+		resultType="com.chuangyun.modules.sys.entity.SysUserEntity">
+		SELECT
+		a.*, b.name dept_name
+		FROM
+		s_user a
+		LEFT JOIN
+		s_dept b
+		ON
+		a.dept_id = b.dept_id
+		WHERE user_id = #{value}
+	</select>
+
+	<select id="queryList"
+		resultType="com.chuangyun.modules.sys.entity.SysUserEntity">
+		select a.*,b.name as deptName from s_user a
+		LEFT JOIN s_dept b
+		ON a.dept_id = b.dept_id
+		<where>
+			1 = 1
+			<if test="createUserId != null">
+				and `create_user_id` = #{createUserId}
+			</if>
+			<if test="username != null and username.trim() != ''">
+				and (a.`username` like concat('%',#{username},'%')
+				or a.`full_name` like concat('%',#{username},'%'))
+			</if>
+			<choose>
+				<when test="sidx != null and sidx.trim() != ''">
+					order by ${sidx} ${order}
+				</when>
+				<otherwise>
+					order by user_id desc
+				</otherwise>
+			</choose>
+			<if test="offset != null and limit != null">
+				limit #{offset}, #{limit}
+			</if>
+		</where>
+	</select>
+
+	<select id="queryTotal" resultType="int">
+		select count(*) from s_user
+		<where>
+			<if test="createUserId != null">
+				and create_user_id = #{createUserId}
+			</if>
+			<if test="username != null and username.trim() != ''">
+				and username like ('%' + #{username} + '%')
+			</if>
+		</where>
+	</select>
+
+	<!-- 查询用户的所有权限 -->
+	<select id="queryAllPerms" resultType="string">
+		select m.perms from
+		s_user_role ur
+		LEFT JOIN s_role_menu rm on ur.role_id = rm.role_id
+		LEFT JOIN s_menu m on rm.menu_id = m.menu_id
+		where ur.user_id = #{userId}
+	</select>
+
+	<!-- 查询用户的所有菜单ID -->
+	<select id="queryAllMenuId" resultType="long">
+		select distinct
+		rm.menu_id from s_user_role ur
+		LEFT JOIN s_role_menu rm on ur.role_id = rm.role_id
+		where ur.user_id = #{userId}
+	</select>
+
+	<!-- 查询手机号使用的次数 -->
+	<select id="queryCountByMobile" resultType="int">
+		select count(1) from s_user
+		where mobile = #{mobile}
+	</select>
+
+	<select id="queryByUserName"
+		resultType="com.chuangyun.modules.sys.entity.SysUserEntity">
+		select * from s_user where username = #{username}
+	</select>
+
+	<insert id="save"
+		parameterType="com.chuangyun.modules.sys.entity.SysUserEntity"
+		useGeneratedKeys="true" keyProperty="userId">
+		insert into s_user
+		(
+		username,
+		full_name,
+		password,
+		dept_id,
+		salt,
+		email,
+		mobile,
+		status,
+		create_user_id,
+		create_time
+		)
+		values
+		(
+		#{username},
+		#{fullname},
+		#{password},
+		#{deptId},
+		#{salt},
+		#{email},
+		#{mobile},
+		#{status},
+		#{createUserId},
+		#{createTime}
+		)
+	</insert>
+
+	<update id="update"
+		parameterType="com.chuangyun.modules.sys.entity.SysUserEntity">
+		update s_user
+		<set>
+			<if test="username != null">username = #{username},</if>
+			<if test="fullname != null">full_name = #{fullname},</if>
+			<if test="password != null">password = #{password},</if>
+			<if test="email != null">email = #{email},</if>
+			<if test="mobile != null">mobile = #{mobile},</if>
+			<if test="status != null">status = #{status},</if>
+			<if test="deptId != null">dept_id = #{deptId},</if>
+		</set>
+		where user_id = #{userId}
+		<if test="createUserId != null">
+			and create_user_id = #{createUserId}
+		</if>
+	</update>
+
+	<update id="updatePassword" parameterType="map">
+		update s_user set
+		password = #{newPassword}
+		where user_id = #{userId} and password = #{password}
+	</update>
+
+	<delete id="deleteBatch" parameterType="int">
+		delete from s_user where user_id in
+		<foreach item="userId" collection="array" open="("
+			separator="," close=")">
+			#{userId}
+		</foreach>
+	</delete>
+
+</mapper>

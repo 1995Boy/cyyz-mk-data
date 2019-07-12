@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>公司简介</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+	<link rel="stylesheet" type="text/css" href="css/main.css"/>
+	<link rel="stylesheet" type="text/css" href="css/mainE.css"/>
+	<link rel="stylesheet" href="css/loading/style.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/mainS.css">
+    <script src="libs/jquery.min.js"></script>
+    <script src="libs/vue.min.js"></script>
+    <script src="libs/router.js"></script>
+    <script src="plugins/jqgrid/jquery.jqGrid.min.js"></script>
+    <script src="plugins/echarts/echarts.min.js"></script>
+    <script src="plugins/echarts/quzhou.js"></script>
+    <script src="plugins/artTemplate/template-native.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/mainS.js"></script> 
+    
+</head>
+<body>
+       
+    <div class="content">
+        <div class="left">
+                <table class="table table-bordered table-striped"  id="handle">
+                    <!-- 填入 -->
+                </table>
+        </div>
+        <div class="right">
+                <div class="news">
+                    <h3>新闻公告</h3>
+                    <div id="absBox">
+                        <div class="new">
+                            <table class="table table-bordered table-striped" id="new">
+                                <!-- 填入 -->
+                            </table>
+                        </div>
+                    </div>
+                </div>
+              
+            <div class="abstract">
+                <h3>公司荣誉简介</h3>
+                <div id="absBox">
+                    <div id="abst" class="con">
+                        <!-- 填入 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script id="banli" type="text/html">
+        <thead class="tab">
+                <tr>
+                    <th colspan="6"  class="daiban color">待办项目</th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th>待办名称</th>
+                    <th>待办内容</th>
+                    <th>创建时间</th>
+                    <th>创建人</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody class="tab">
+                 <% for(var i=0;i<data.length;i++){ %>
+                        <tr>
+                            <td scope="row"><%=data[i].dbId %></td>
+                            <td><%=data[i].dbName %></td>
+                            <td><%=data[i].dbContent %></td>
+                            <td><%=data[i].createTime %></td>
+                            <td><%=data[i].createUser %></td>
+                            <td>
+                                <button type="button" class="btn btn-primary"><i class="glyphicon glyphicon-cloud"></i>办理</button>
+                            </td>
+                        </tr>
+                    <% } %>
+            </tbody>
+    </script>
+
+    <script id="xinwen" type="text/html">
+        <tbody>
+            
+            <% for(var i=0;i<data.length;i++){ %>
+                <tr>
+                    <td><%=data[i].newsHeader %></td>
+                    <td><%=data[i].createTime %></td>
+                </tr>
+            <% } %>
+            
+        </tbody>
+    </script>
+
+    <script id="jianjie" type="text/html">
+        <div><%=data.con %><div>
+            
+    </script>
+</body>
+
+</html>

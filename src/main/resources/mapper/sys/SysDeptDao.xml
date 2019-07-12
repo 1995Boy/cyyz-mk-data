@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.chuangyun.modules.sys.dao.SysDeptDao">
+    <select id="queryObject"
+            resultType="com.chuangyun.modules.sys.entity.SysDeptEntity">
+		select * from s_dept where dept_id = #{value}
+	</select>
+
+    <select id="queryList"
+            resultType="com.chuangyun.modules.sys.entity.SysDeptEntity">
+        select m.*,(select p.name from s_dept p where p.dept_id =
+        m.parent_id) as parent_name
+        from s_dept m
+        <where>
+            1 = 1
+            <if test="deptId != null">
+                AND FIND_IN_SET(dept_id, getChildrenDept(#{deptId}))
+            </if>
+            <choose>
+                <when test="sidx != null and sidx.trim() != ''">
+                    order by m.${sidx} ${order}
+                </when>
+                <otherwise>
+                    order by m.dept_id,m.parent_id asc
+                </otherwise>
+            </choose>
+            <if test="offset != null and limit != null">
+                limit #{offset}, #{limit}
+            </if>
+        </where>
+    </select>
+    <select id="queryDeptListParentId"
+            resultType="com.chuangyun.modules.sys.entity.SysDeptEntity">
+		select * from s_dept where parent_id = #{deptId} order by
+		dept_id asc
+	</select>
+
+    <insert id="save"
+            parameterType="com.chuangyun.modules.sys.entity.SysDeptEntity">
+		insert into s_dept
+		(
+		parent_id,
+		org_code,
+		name
+		)
+		values
+		(
+		#{parentId},
+		#{orgCode},
+		#{name}
+		)
+	</insert>
+
+    <update id="update"
+            parameterType="com.chuangyun.modules.sys.entity.SysDeptEntity">
+        update s_dept
+        <set>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="name != null">name = #{name}</if>
+        </set>
+        where dept_id = #{deptId}
+    </update>
+
+    <delete id="deleteBatch">
+        delete from s_dept where dept_id in
+        <foreach item="deptId" collection="array" open="("
+                 separator="," close=")">
+            #{deptId}
+        </foreach>
+    </delete>
+
+    <select id="checkOrgCode" resultType="java.lang.Integer">
+		select count(1) from s_dept where org_code = #{orgCode}
+	</select>
+
+    <select id="queryPermissionList"
+            resultType="com.chuangyun.modules.sys.entity.SysDeptEntity">
+        select m.*,(select p.name from s_dept p where p.dept_id =
+        m.parent_id) as parent_name
+        from s_dept m
+        <where>
+            m.org_code &lt;&gt; ''
+            <if test="deptId != null">
+                AND FIND_IN_SET(dept_id, getChildrenDept(#{deptId}))
+            </if>
+            <!--<choose>-->
+            <!--<when test="sidx != null and sidx.trim() != ''">-->
+            <!--order by m.${sidx} ${order}-->
+            <!--</when>-->
+            <!--<otherwise>-->
+            <!--order by m.dept_id,m.parent_id asc-->
+            <!--</otherwise>-->
+            <!--</choose>-->
+            <!--<if test="offset != null and limit != null">-->
+            <!--limit #{offset}, #{limit}-->
+            <!--</if>-->
+        </where>
+    </select>
+
+    <select id="queryAllPermissionList"
+            resultType="com.chuangyun.modules.sys.entity.vo.DeptVO">
+        SELECT
+        sd.org_code,
+        sd.`name` org_name,
+        CASE
+        WHEN t.dept_id IS NULL THEN 0
+        ELSE 1
+        END rights
+        FROM
+        (SELECT
+        srd.dept_id
+        FROM
+        s_user_role sur, s_role_dept srd
+        WHERE
+        sur.role_id = srd.role_id
+        AND sur.user_id = #{userId}) t
+        RIGHT JOIN
+        s_dept sd ON t.dept_id = sd.dept_id
+        WHERE
+        sd.org_code &lt;&gt; ''
+    </select>
+</mapper>
